@@ -48,8 +48,8 @@ Bcrypt was developed to reduce the effectiveness of rainbow tables. Before a use
   * Mac (installed via Homebrew): `brew services start mongodb-community` or see [here](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/#run-mongodb)
   * Ubuntu Linux: `sudo service mongodb start` or see [here](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/#run-mongodb-community-edition)
   * Windows: It should already be running if installed as Windows service. See [here](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#run-mdb-edition-as-a-windows-service)
-  * To check whether you have a running MongoDB instance, type `mongo` in the terminal to launch the MongoDB Shell connecting to the database on 127.0.0.1(localhost):27017, which is also a good way to see what data you have in the database and also modify them. Checkout the docs for commands you can use [here](https://docs.mongodb.com/manual/mongo/#working-with-the-mongo-shell)
-- [ ] Run `npm start` (in a separate terminal tab or window if you have `mongo` running already) to start your server. Open your browser and head to `http://localhost:3000/`
+  * To check whether you have a running MongoDB instance, type `mongosh` in the terminal to launch the MongoDB Shell connecting to the database on 127.0.0.1(localhost):27017, which is also a good way to see what data you have in the database and also modify them. Checkout the docs for commands you can use [here](https://docs.mongodb.com/manual/mongo/#working-with-the-mongo-shell)
+- [ ] Run `npm start` (in a separate terminal tab or window if you have `mongosh` running already) to start your server. Open your browser and head to `http://localhost:3000/`
 
 ### Testing
 - [ ] Run `npm test` in your terminal to test your code
