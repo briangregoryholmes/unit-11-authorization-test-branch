@@ -61,12 +61,28 @@ sessionController.startSession = (req, res, next) => {
   // return next();
 
   //MONGODB BASED SESSIONS
-  Session.create({ cookieId: res.locals.user.id }, (err, session) => {
+  //Check if user already has a session
+  Session.findOne({ cookieId: res.locals.user.id }, (err, session) => {
     if (err)
       return next(
         'Error in sessionController.startSession: ' + JSON.stringify(err)
       );
-    return next();
+    if (session) {
+      //Update session expiration
+      console.log('Extending existing session');
+      session.expires = session.expires + 30 * 1000;
+      session.save();
+      return next();
+    } else {
+      console.log('creating new session');
+      Session.create({ cookieId: res.locals.user.id }, (err, session) => {
+        if (err)
+          return next(
+            'Error in sessionController.startSession: ' + JSON.stringify(err)
+          );
+        return next();
+      });
+    }
   });
 };
 

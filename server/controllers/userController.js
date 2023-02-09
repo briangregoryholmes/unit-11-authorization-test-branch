@@ -26,6 +26,7 @@ userController.getAllUsers = (req, res, next) => {
  * createUser - create and save a new User into the database.
  */
 userController.createUser = (req, res, next) => {
+  console.log('Creating user');
   console.log(req.body);
 
   if (!req.body.username || !req.body.password) {
@@ -46,6 +47,7 @@ userController.createUser = (req, res, next) => {
  * against the password stored in the database.
  */
 userController.verifyUser = (req, res, next) => {
+  console.log("Verifying user's credentials");
   const { username, password } = req.body;
   console.log({ username });
 

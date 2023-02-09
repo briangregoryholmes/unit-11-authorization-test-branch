@@ -14,6 +14,23 @@ const app = express();
 const mongoURI = 'mongodb://127.0.0.1:27017/test';
 mongoose.connect(mongoURI);
 
+//Set up security headers
+app.use(function (req, res, next) {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
+  );
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'same-origin');
+  res.setHeader(
+    'Feature-Policy',
+    "geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; vibrate 'none'; fullscreen 'self'; payment 'none';"
+  );
+  next();
+});
+
 /**
  * Automatically parse urlencoded body content and form data from incoming requests and place it
  * in req.body

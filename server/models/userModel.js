@@ -19,6 +19,10 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.post('findOne', function (doc) {
+  console.log('just found one');
+});
+
 userSchema.methods.comparePassword = async function (plaintextPassword) {
   console.log('Mongo Middleware Checking Password: ', this.password);
   const correct = bcrypt.compare(plaintextPassword, this.password);
