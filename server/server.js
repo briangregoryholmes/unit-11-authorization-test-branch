@@ -78,10 +78,14 @@ app.post(
 /**
  * Authorized routes
  */
-app.get('/secret/users', userController.getAllUsers, (req, res) => {
-  console.log('Sending secrets data');
-  res.send({ users: res.locals.users });
-});
+app.get(
+  '/secret/users',
+  [sessionController.isLoggedIn, userController.getAllUsers],
+  (req, res) => {
+    console.log('Sending secrets data');
+    res.send({ users: res.locals.users });
+  }
+);
 
 app.get('/secret', sessionController.isLoggedIn, (req, res) => {
   console.log('Giving access to secret');
