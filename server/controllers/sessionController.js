@@ -70,7 +70,7 @@ sessionController.startSession = (req, res, next) => {
     if (session) {
       //Update session expiration
       console.log('Extending existing session');
-      session.expires = session.expires + 30 * 1000;
+      session.createdAt = Date.now();
       session.save();
       return next();
     } else {
