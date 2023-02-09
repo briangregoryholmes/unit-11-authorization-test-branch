@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const sinon = require('sinon');
 
 describe('Unit 10 Tests', () => {
-
   let id;
   let clock;
 
@@ -16,22 +15,20 @@ describe('Unit 10 Tests', () => {
   });
 
   beforeEach((done) => {
-
     User.remove({}, () => {
       Session.remove({}, () => {
-
-        User.create({
-          username: 'david',
-          password: 'aight'
-        }, (err, user) => {
-          id = user.id;
-          done();
-        });
-
+        User.create(
+          {
+            username: 'david',
+            password: 'aight',
+          },
+          (err, user) => {
+            id = user.id;
+            done();
+          }
+        );
       });
     });
-
-
   });
 
   after(() => {
@@ -39,14 +36,13 @@ describe('Unit 10 Tests', () => {
   });
 
   describe('Creating users', () => {
-
     it('POST request to "/signup" route with correctly formatted body creates a user', (done) => {
       request
         .post('/signup')
-        .send({"username": "test1", "password" : "password1"})
+        .send({ username: 'test1', password: 'password1' })
         .type('form')
         .end((err, res) => {
-          User.findOne({username: 'test1'}, (err, user) => {
+          User.findOne({ username: 'test1' }, (err, user) => {
             expect(err).to.be.null;
             expect(user).to.exist;
             done();
@@ -57,9 +53,10 @@ describe('Unit 10 Tests', () => {
     it('POST request to "/signup" route with incorrectly formatted body should redirect to "/signup" with an error message', (done) => {
       request
         .post('/signup')
-        .send({"username": "test2"})
+        .send({ username: 'test2' })
         .type('form')
         .end((err, res) => {
+          console.log(res.text);
           expect(res.text.match(/Error/)).to.not.be.null;
           done();
         });
@@ -77,11 +74,9 @@ describe('Unit 10 Tests', () => {
           });
         });
     });
-
   });
 
   describe('Authenticating users', () => {
-
     it('POST request to "/login" route with correctly formated correct information redirects to "/secret"', (done) => {
       request
         .post('/login')
@@ -97,7 +92,7 @@ describe('Unit 10 Tests', () => {
       request
         .post('/login')
         .type('form')
-        .send({ 'username': 'david', password: 'incorrect' })
+        .send({ username: 'david', password: 'incorrect' })
         .end((err, res) => {
           expect(res.headers.location).to.eql('/signup');
           done();
@@ -108,53 +103,41 @@ describe('Unit 10 Tests', () => {
       request
         .post('/login')
         .type('form')
-        .send({ 'username': 'idontexist', password: 'aight' })
+        .send({ username: 'idontexist', password: 'aight' })
         .end((err, res) => {
           expect(res.headers.location).to.eql('/signup');
           done();
         });
     });
-
   });
 
   describe('Cookies', () => {
-
     it('Header has cookie name of "codesmith"', (done) => {
-      request
-        .get('/')
-        .expect('set-cookie',/codesmith=/, done);
+      request.get('/').expect('set-cookie', /codesmith=/, done);
     });
 
     it('"codesmith" cookie has value of "hi"', (done) => {
-      request
-        .get('/')
-        .expect('set-cookie',/hi/, done);
+      request.get('/').expect('set-cookie', /hi/, done);
     });
 
     it('Header has a cookie name "secret"', (done) => {
-      request
-        .get('/')
-        .expect('set-cookie', /secret=/, done);
+      request.get('/').expect('set-cookie', /secret=/, done);
     });
 
     it('"secret" cookie has a random value from 0-99', (done) => {
       let oldNumber;
       let newNumber;
       let cookies;
-      request
-        .get('/')
-        .end((err, res) => {
-          oldNumber = getCookie(res.headers['set-cookie'],'secret');
-          request
-            .get('/')
-            .end((err, res) => {
-              newNumber = getCookie(res.headers['set-cookie'],'secret');
-              expect(newNumber).to.be.within(0,99);
-              expect(oldNumber).to.be.within(0,99);
-              expect(newNumber).to.not.eql(oldNumber);
-              done();
-            });
+      request.get('/').end((err, res) => {
+        oldNumber = getCookie(res.headers['set-cookie'], 'secret');
+        request.get('/').end((err, res) => {
+          newNumber = getCookie(res.headers['set-cookie'], 'secret');
+          expect(newNumber).to.be.within(0, 99);
+          expect(oldNumber).to.be.within(0, 99);
+          expect(newNumber).to.not.eql(oldNumber);
+          done();
         });
+      });
     });
 
     it('Header has a cookie named "ssid" when a user successfully logins', (done) => {
@@ -186,22 +169,20 @@ describe('Unit 10 Tests', () => {
       request
         .post('/login')
         .type('form')
-        .send({ username: 'david', password : 'aight' })
+        .send({ username: 'david', password: 'aight' })
         .expect('set-cookie', regex, done);
     });
-
   });
 
   describe('Sessions', () => {
-
     it('Creates a session when a user successfully creates an account', (done) => {
       request
         .post('/signup')
         .type('form')
-        .send({username: 'test2', password: 'password2'})
+        .send({ username: 'test2', password: 'password2' })
         .end((err, res) => {
           User.findOne({ username: 'test2' }, (err, user) => {
-            Session.findOne({cookieId: user._id}, (err, session) => {
+            Session.findOne({ cookieId: user._id }, (err, session) => {
               expect(err).to.be.null;
               expect(session).to.exist;
               done();
@@ -214,10 +195,10 @@ describe('Unit 10 Tests', () => {
       request
         .post('/login')
         .type('form')
-        .send({username: 'david', password: 'aight'})
+        .send({ username: 'david', password: 'aight' })
         .end((err, res) => {
-          User.findOne({username: 'david'}, (err, user) => {
-            Session.findOne({cookieId: user._id}, (err, session) => {
+          User.findOne({ username: 'david' }, (err, user) => {
+            Session.findOne({ cookieId: user._id }, (err, session) => {
               expect(err).to.be.null;
               expect(session).to.exist;
               done();
@@ -241,29 +222,25 @@ describe('Unit 10 Tests', () => {
           });
         });
     });
-
   });
 
   describe('Authorizing users', () => {
-
     it('Block "/secret" if session not active', (done) => {
-     request
-       .get('/secret')
-       .end((err, res) => {
+      request.get('/secret').end((err, res) => {
         expect(res.text).to.not.include('Secret');
         expect(res.text).to.not.include('david');
         done();
-       });
+      });
     });
 
     it('Redirects from "/secret" to "/signup" if session not active', (done) => {
-     request
-       .get('/secret')
-       .expect(302)
-       .end((err, res) => {
-        expect(res.headers.location).to.eql('/signup');
-        done();
-       });
+      request
+        .get('/secret')
+        .expect(302)
+        .end((err, res) => {
+          expect(res.headers.location).to.eql('/signup');
+          done();
+        });
     });
 
     it('Allows access to "/secret" if session active', (done) => {
@@ -275,11 +252,11 @@ describe('Unit 10 Tests', () => {
           const cookie = res.headers['set-cookie'][0].split(';')[0];
 
           request
-            .get('/secret')
+            .get('/secret') //Change this line to .get('/secret/users')
             .set('Cookie', cookie)
             .expect(200)
             .end((err, res) => {
-              expect(res.text).to.contain('Secret');
+              expect(res.text).to.contain('Secret'); //Comment out this line
               expect(res.text).to.contain('david');
               done(err);
             });
@@ -293,7 +270,6 @@ describe('Unit 10 Tests', () => {
         .send({ username: 'david', password: 'aight' })
         .end((err, res) => {
           Session.remove({ cookieId: id }, (err, session) => {
-
             request
               .get('/secret')
               .expect(302)
@@ -304,18 +280,16 @@ describe('Unit 10 Tests', () => {
           });
         });
     });
-
   });
 
   describe('Bcrypting passwords', () => {
-
     it('Passwords should not be stored in plaintext', (done) => {
       request
         .post('/signup')
-        .send({"username": "test3", "password" : "password3"})
+        .send({ username: 'test3', password: 'password3' })
         .type('form')
         .end((err, res) => {
-          User.findOne({username: 'test3'}, (err, user) => {
+          User.findOne({ username: 'test3' }, (err, user) => {
             expect(user.password).to.not.eql('password3');
             done();
           });
@@ -328,7 +302,7 @@ describe('Unit 10 Tests', () => {
         .send({ username: 'test4', password: 'password4' })
         .type('form')
         .end((err, res) => {
-          User.findOne({username: 'test4'}, (err, user) => {
+          User.findOne({ username: 'test4' }, (err, user) => {
             expect(bcrypt.compareSync('password4', user.password)).to.be.true;
             done();
           });
@@ -342,9 +316,7 @@ describe('Unit 10 Tests', () => {
         done();
       });
     });
-
   });
-
 });
 
 function getCookieValue(cookie) {
@@ -352,7 +324,9 @@ function getCookieValue(cookie) {
 }
 
 function getCookie(cookieArray, name) {
-  return getCookieValue(cookieArray.filter((el) => {
-    return el.split(';')[0].split('=')[0] === name;
-  }));
+  return getCookieValue(
+    cookieArray.filter((el) => {
+      return el.split(';')[0].split('=')[0] === name;
+    })
+  );
 }
