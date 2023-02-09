@@ -21,6 +21,8 @@ sessionController.isLoggedIn = (req, res, next) => {
   //     console.log(err);
   //     return res.redirect('/signup');
   //   }
+  //   const authedUser = decoded.id;
+  //   req.locals.authedUser = authedUser;
   //   console.log({ decoded });
   //   return next();
   // });
@@ -28,14 +30,17 @@ sessionController.isLoggedIn = (req, res, next) => {
   //MONGODB BASED SESSIONS
   Session.findOne({ cookieId: cookie }, (err, session) => {
     console.log({ session });
-    if (err)
+    if (err) {
       return next(
         'Error in sessionController.isLoggedIn: ' + JSON.stringify(err)
       );
+    }
+
     if (!session) {
       console.log('No session found');
       return res.redirect('/signup');
     }
+
     res.locals.user = session;
     return next();
   });
@@ -61,12 +66,13 @@ sessionController.startSession = (req, res, next) => {
   // return next();
 
   //MONGODB BASED SESSIONS
-  //Check if user already has a session
+  // Check if user already has a session
   Session.findOne({ cookieId: res.locals.user.id }, (err, session) => {
     if (err)
       return next(
         'Error in sessionController.startSession: ' + JSON.stringify(err)
       );
+
     if (session) {
       //Update session expiration
       console.log('Extending existing session');

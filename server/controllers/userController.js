@@ -48,18 +48,18 @@ userController.createUser = (req, res, next) => {
  */
 userController.verifyUser = (req, res, next) => {
   console.log("Verifying user's credentials");
-  const { username, password } = req.body;
+  const { username, password: plaintextPassword } = req.body;
   console.log({ username });
 
   if (!username) return res.redirect('/signup');
 
   User.findOne({ username }, async (err, user) => {
-    console.log('Plain password', password);
+    console.log('Plaintext password from login', plaintextPassword);
     console.log('Found user:', user);
 
     if (!user) return res.redirect('/signup');
 
-    const success = await user.comparePassword(password);
+    const success = await user.comparePassword(plaintextPassword);
     console.log({ success });
 
     if (!success) return res.redirect('/signup');

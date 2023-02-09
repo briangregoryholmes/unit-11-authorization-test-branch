@@ -252,11 +252,11 @@ describe('Unit 10 Tests', () => {
           const cookie = res.headers['set-cookie'][0].split(';')[0];
 
           request
-            .get('/secret') //Change this line to .get('/secret/users')
+            .get('/secret/users') //Change this line to .get('/secret/users')
             .set('Cookie', cookie)
             .expect(200)
             .end((err, res) => {
-              expect(res.text).to.contain('Secret'); //Comment out this line
+              //expect(res.text).to.contain('Secret'); //Comment out this line
               expect(res.text).to.contain('david');
               done(err);
             });
